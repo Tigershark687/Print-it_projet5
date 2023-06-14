@@ -17,3 +17,76 @@ const slides = [
 	}
 ];
 
+const bulletpoint = document.getElementById("bullet_point");
+let bannerImg = document.getElementById("banner-img");
+let bannerImgFileName = bannerImg.src.substring(bannerImg.src.lastIndexOf("/") + 1, bannerImg.src.length);
+
+for (let i = 0; i < slides.length; i++) {
+	let dotElement = document.createElement("div");
+	dotElement.className = "dot";
+	bulletpoint.appendChild(dotElement);
+
+	if(bannerImgFileName === slides[i].image) {
+		dotElement.className += " dot_selected";
+	}
+}
+
+function addDotSelectedToElement(element) {
+	element.classList.add("dot_selected");
+}
+
+function removeDotSelectedFromElement(element) {
+	element.classList.remove("dot_selected");
+}
+
+function changeImgAndText(bannerP,nextSlide) {
+	bannerImgFileName = nextSlide.image;
+	bannerP.innerHTML = nextSlide.tagLine;
+}
+
+function changeImgSrc(imgSrc) {
+	bannerImg.src = "./assets/images/slideshow/" + imgSrc.image;
+}
+
+document.getElementById("slide_left").addEventListener('click', function() {
+	//alert("Previous slide");
+	let nextImgIndex = 0;
+	let bannerP = document.getElementById("banner-p");
+	let dotElement = document.getElementsByClassName("dot");
+	
+	for (let i = 0; i < slides.length; i++) {
+		if(bannerImgFileName === slides[0].image) {
+			changeImgSrc(slides[slides.length - 1]);
+			nextImgIndex = slides.length - 1;
+			addDotSelectedToElement(dotElement[nextImgIndex]);
+			removeDotSelectedFromElement(dotElement[0]);
+		} else if(bannerImgFileName === slides[i].image) {
+			changeImgSrc(slides[i - 1]);
+			addDotSelectedToElement(dotElement[i - 1]);
+			removeDotSelectedFromElement(dotElement[i]);
+			nextImgIndex = i - 1;
+		}
+	}
+	changeImgAndText(bannerP, slides[nextImgIndex]);
+});
+
+document.getElementById("slide_right").addEventListener('click', function() {
+	//alert("Next slide");
+	let nextImgIndex = 0;
+	let bannerP = document.getElementById("banner-p");
+	let dotElement = document.getElementsByClassName("dot");
+	
+	for (let i = 0; i < slides.length; i++) {
+		if(bannerImgFileName === slides[slides.length - 1].image) {
+			changeImgSrc(slides[0]);
+			addDotSelectedToElement(dotElement[0]);
+			removeDotSelectedFromElement(dotElement[slides.length - 1]);
+		} else if(bannerImgFileName === slides[i].image) {
+			changeImgSrc(slides[i + 1]);
+			nextImgIndex = i + 1;
+			addDotSelectedToElement(dotElement[nextImgIndex]);
+			removeDotSelectedFromElement(dotElement[i]);
+		} 
+	}
+	changeImgAndText(bannerP, slides[nextImgIndex]);
+});
